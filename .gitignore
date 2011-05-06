@@ -1,0 +1,6 @@
+*.o
+*.hi
+vhdl/
+work-obj93.cf
+*.vcd
+*_tb

@@ -1,9 +1,16 @@
 module Blaze where
 
+{-
+A small CPU that can add and subtract numbers.
+
+It's interface is an input port and a output port.
+-}
+
 import CLasH.HardwareTypes
 
-type Word = Signed D4
-type RegisterIndex = Index D4
+type Word = Signed D128
+type RegisterSize = D16
+type RegisterIndex = Index RegisterSize
 
 data Instruction = 
     Nop
@@ -13,7 +20,7 @@ data Instruction =
   | Sub RegisterIndex RegisterIndex RegisterIndex
 
 data BlazeR = R {
-    registers :: Vector D4 Word
+    registers :: Vector RegisterSize Word
   }
 
 type BlazeS = State BlazeR
@@ -48,10 +55,12 @@ blazeTop = blaze ^^^ blazeInit
 {-# ANN program1 TestInput #-}
 program1 :: [(Instruction, Word)]
 program1 = [
-    (In  0,  1)
-  , (In  1,  2)
-  , (Add 0 1 2, 0)
-  , (Out 2, 0)
+    (In  0,     1)  -- r0 = 1
+  , (In  1,     2)  -- r1 = 2
+  , (Add 0 1 2, 0)  -- r2 = r0 + r1
+  , (Out 2,     0)
+  , (Sub 0 1 3, 0)  -- r3 = r0 - r1
+  , (Out 3,     0)
   ]
 
 sim p = simulate blazeTop p
